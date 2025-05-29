@@ -1,0 +1,22 @@
+{
+  "recording_id": "12345678-1234-5678-1234-567812345678",
+  "transcription": "This is a transcription of the meeting...",
+  "language": "en",
+  "language_name": "English",
+  "analysis": {
+    "sentiment": {
+      "label": "positive",
+      "confidence": 0.92,
+      "explanation": "The tone is generally positive with expressions of approval and satisfaction"
+    },
+    "summary": "Meeting about Q3 project planning with discussion of timelines and resource allocation",
+    "topics": ["project planning", "resource allocation", "timeline", "budget"],
+    "entities": [
+      { "name": "John Smith", "type": "person" },
+      { "name": "Marketing Department", "type": "organization" }
+    ],
+    "key_phrases": ["project deadline", "budget constraints", "team collaboration"],
+    "action_items": ["Schedule follow-up meeting", "Prepare budget proposal"],
+    "questions": ["When is the project deadline?", "Who will lead the marketing initiative?"]
+  }
+}

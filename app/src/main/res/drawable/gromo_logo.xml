@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="40dp"
+    android:viewportWidth="200"
+    android:viewportHeight="60">
+    
+    <!-- g -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M30,15 Q40,15 40,25 L40,35 Q40,45 30,45 Q20,45 20,35 L20,25 Q20,15 30,15 M30,20 Q25,20 25,25 L25,35 Q25,40 30,40 Q35,40 35,35 L35,25 Q35,20 30,20"/>
+    
+    <!-- r -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M45,20 L50,20 L50,40 L45,40 L45,20"/>
+    
+    <!-- o -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M65,15 Q75,15 75,25 L75,35 Q75,45 65,45 Q55,45 55,35 L55,25 Q55,15 65,15 M65,20 Q60,20 60,25 L60,35 Q60,40 65,40 Q70,40 70,35 L70,25 Q70,20 65,20"/>
+    
+    <!-- m -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M80,20 L85,20 L85,40 Q85,45 90,45 Q95,45 95,40 L95,20 L100,20 L100,40 Q100,45 105,45 Q110,45 110,40 L110,20 L115,20 L115,40 Q115,50 105,50 Q100,50 97.5,45 Q95,50 90,50 Q80,50 80,40 L80,20"/>
+    
+    <!-- o -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M130,15 Q140,15 140,25 L140,35 Q140,45 130,45 Q120,45 120,35 L120,25 Q120,15 130,15 M130,20 Q125,20 125,25 L125,35 Q125,40 130,40 Q135,40 135,35 L135,25 Q135,20 130,20"/>
+    
+    <!-- Leaf -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M145,15 Q160,15 160,30 Q160,45 145,45 L145,40 Q155,40 155,30 Q155,20 145,20 L145,15"/>
+    
+    <!-- Rupee symbol -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M165,25 L170,25 L170,30 L165,30 L165,25"/>
+
+</vector> 

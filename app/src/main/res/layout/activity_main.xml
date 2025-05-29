@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header -->
+            <TextView
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Your Path to Sell"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- Gromo Financial Products Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:src="@drawable/gromo_image"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100+ Financial Products"
+                        android:textColor="@color/text_gray"
+                        android:textSize="14sp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center">
+
+                        <!-- Icons -->
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_wallet" android:layout_marginEnd="12dp"/>
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_investment" android:layout_marginEnd="12dp"/>
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_bank" android:layout_marginEnd="12dp"/>
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_chart" android:layout_marginEnd="12dp"/>
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_gold"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/financeButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sell Financial Products →"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="16dp"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/primary_blue"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Gromo Insure Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:src="@drawable/gromo_insure_logo" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center">
+
+                        <!-- Icons -->
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_health" android:layout_marginEnd="12dp"/>
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_car" android:layout_marginEnd="12dp"/>
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_bike" android:layout_marginEnd="12dp"/>
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_term" android:layout_marginEnd="12dp"/>
+                        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_travel"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/InsuranceButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sell Insurance →"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="16dp"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/green"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Info Text -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_info"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Not sure where to begin? Just choose one option and start your journey. You can always switch later!"
+                    android:textColor="@color/text_gray"
+                    android:textSize="13sp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
