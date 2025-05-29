@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_gromo"
+        android:icon="@drawable/ic_gromo"
+        android:title="GroMo" />
+    
+    <item
+        android:id="@+id/nav_leads"
+        android:icon="@drawable/ic_leads"
+        android:title="Leads" />
+    
+    <item
+        android:id="@+id/nav_sell"
+        android:icon="@drawable/ic_sell"
+        android:title="Sell" />
+    
+    <item
+        android:id="@+id/nav_for_you"
+        android:icon="@drawable/ic_for_you"
+        android:title="For You" />
+    
+    <item
+        android:id="@+id/nav_learn"
+        android:icon="@drawable/ic_learn"
+        android:title="Learn" />
+</menu> 
