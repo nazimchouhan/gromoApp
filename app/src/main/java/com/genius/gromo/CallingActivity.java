@@ -319,7 +319,7 @@ public class CallingActivity extends AppCompatActivity {
 
             json.put("streaming",streamingObj);
 
-//            json.put("status_callback", callbackArray);
+            json.put("status_callback", callbackArray);
 
             String jsonString = json.toString();
             //RequestBody body = RequestBody.create(json.toString(), MediaType.parse("application/json"));
