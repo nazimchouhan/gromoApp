@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 
 public class VoiceAnalysisService {
-    private static final String BASE_URLRecording = "https://b5ff-180-151-5-26.ngrok-free.app"; // consider this line
+    private static final String BASE_URLRecording = "https://bb0c-14-194-2-90.ngrok-free.app"; // consider this line
 
     private final Context context;
     private final OkHttpClient client;

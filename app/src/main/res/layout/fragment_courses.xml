@@ -52,7 +52,7 @@
                 android:id="@+id/selectedDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="June 15, 2024"
+                android:text="June 2, 2025"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#1A1A1A" />
@@ -404,7 +404,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:backgroundTint="@color/primary_blue"
-            android:text="Data BZ Summary"
+            android:text="Previous Summary"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"

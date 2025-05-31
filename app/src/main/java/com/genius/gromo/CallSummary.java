@@ -22,7 +22,7 @@ import org.json.JSONObject;
 public class CallSummary extends AppCompatActivity {
 
     private ProgressBar progressBar; // Your progress bar
-    private View contentLayout;
+//    private View contentLayout;
     private Toolbar toolbar;
     private TextView callDurationText;
     private EditText objectionsInput, feedbackInput, improvementInput;
@@ -43,28 +43,28 @@ public class CallSummary extends AppCompatActivity {
         initializeViews();
 
         // Get recording IDs from different sources
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefsSummary", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         recordingId1 = sharedPreferences.getString("recordingId", null);
         recordingId2 = getIntent().getStringExtra("recording_id");
 
         // Choose which recording ID to use
         recordingIdToUse = recordingId2 != null ? recordingId2 : recordingId1;
-
+        Log.e("recordingid",recordingIdToUse);
         // Show progress and start analysis if we have a recording ID
         if (recordingIdToUse != null && !recordingIdToUse.isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
-            contentLayout.setVisibility(View.GONE);
+//            contentLayout.setVisibility(View.GONE);
             analyzeRecording();
         } else {
             progressBar.setVisibility(View.GONE);
-            contentLayout.setVisibility(View.VISIBLE);
+//            contentLayout.setVisibility(View.VISIBLE);
             Toast.makeText(this, "No recording ID available", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity since we can't proceed without a recording ID
         }
     }
 
     private void initializeViews() {
-        contentLayout = findViewById(R.id.ContentLayout);
+//        contentLayout = findViewById(R.id.ContentLayout);
         progressBar = findViewById(R.id.progressBar);
         toolbar = findViewById(R.id.toolbar);
         callDurationText = findViewById(R.id.callDurationText);
@@ -107,16 +107,17 @@ public class CallSummary extends AppCompatActivity {
             @Override
             public void onSuccess(JSONObject result) {
                 try {
+                    Log.e("response",result.toString());
                     VoiceAnalysis analysis = VoiceAnalysis.fromJson(result);
                     runOnUiThread(() -> {
                         // Update your analysis data in the UI
                         updateUIWithAnalysis(analysis);
 
                         // Once data is set, hide progress bar AFTER layout is drawn
-                        contentLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-                            // Layout is fully visible at this point
-                            progressBar.setVisibility(View.GONE);
-                        });
+//                        contentLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+//                            // Layout is fully visible at this point
+//                            progressBar.setVisibility(View.GONE);
+//                        });
                     });
 
                 }catch (Exception e) {

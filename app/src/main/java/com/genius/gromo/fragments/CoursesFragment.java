@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,8 @@ import com.example.gromoapp.R;
 
 
 public class CoursesFragment extends Fragment {
+    TextView summarytext;
+    TextView feedbacktext;
 
     public CoursesFragment() {
         // Required empty public constructor

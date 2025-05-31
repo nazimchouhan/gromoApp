@@ -112,6 +112,7 @@ public class CallingActivity extends AppCompatActivity {
 //        });
 
         callSummaryButton.setOnClickListener(v -> {
+            Log.e("","ActivityStarted");
             Intent intent = new Intent(getApplicationContext(), CallSummary.class);
             startActivity(intent);
         });
@@ -359,8 +360,8 @@ public class CallingActivity extends AppCompatActivity {
                             Log.e(TAG, "Call started successfully. SID: " + sid);
 
                             //Start LiveSummaryActivity
-                            Intent intent = new Intent(getApplicationContext(), LiveSummaryActivity.class);
-                            startActivity(intent);
+//                            Intent intent = new Intent(getApplicationContext(), LiveSummaryActivity.class);
+//                            startActivity(intent);
 
                         } catch (JSONException e) {
                             Log.e(TAG, "Error parsing response JSON", e);
@@ -384,8 +385,7 @@ public class CallingActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("userName", name);
         editor.putString("userPhone", phoneNumber);
-        editor.putString("recordingId",recordingId);
+        editor.putString("recordingId",recordingId); // consider this line for error recordingId
         editor.apply();
     }
-
 }
