@@ -22,7 +22,7 @@ import okio.ByteString;
 public abstract class WebSocketClient {
     private OkHttpClient client;
     private WebSocket webSocket;
-    private static final String WEBSOCKET_URL = "wss://262f-14-194-2-90.ngrok-free.app/ws";
+    private static final String WEBSOCKET_URL = "wss://a5b7-14-194-2-90.ngrok-free.app/ws";
 
     // Connection state
     private enum ConnectionState {

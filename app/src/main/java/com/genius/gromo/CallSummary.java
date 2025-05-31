@@ -65,7 +65,7 @@ public class CallSummary extends AppCompatActivity {
 
     private void initializeViews() {
 //        contentLayout = findViewById(R.id.ContentLayout);
-        progressBar = findViewById(R.id.progressBar);
+//        progressBar = findViewById(R.id.progressBar);
         toolbar = findViewById(R.id.toolbar);
         callDurationText = findViewById(R.id.callDurationText);
         objectionsInput = findViewById(R.id.objectionsInput);
