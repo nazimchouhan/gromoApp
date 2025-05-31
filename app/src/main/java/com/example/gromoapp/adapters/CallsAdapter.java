@@ -1,61 +1,52 @@
 package com.example.gromoapp.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gromoapp.R;
+import com.genius.gromo.CallSummary;
 import com.genius.gromo.model.Call;
-import com.genius.gromo.model.ListItem;
-import com.google.android.material.button.MaterialButton;
+
 import java.util.List;
 
-public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.CallViewHolder> {
 
-    private List<ListItem> items;
-    private OnViewMoreClickListener onViewMoreClickListener;
+    private List<Call> items;
+    private Context context;
 
-    public interface OnViewMoreClickListener {
-        void onViewMoreClick(Call call);
-    }
-
-    public CallsAdapter(List<ListItem> items, OnViewMoreClickListener listener) {
+    public CallsAdapter(Context context, List<Call> items) {
+        this.context = context;
         this.items = items;
-        this.onViewMoreClickListener = listener;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return items.get(position).getType();
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == ListItem.TYPE_HEADER) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_date_header, parent, false);
-            return new HeaderViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_call, parent, false);
-            return new CallViewHolder(view);
-        }
+    public CallViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_call, parent, false);
+        return new CallViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ListItem item = items.get(position);
-        if (holder instanceof HeaderViewHolder) {
-            ((HeaderViewHolder) holder).bind(item);
-        } else if (holder instanceof CallViewHolder) {
-            ((CallViewHolder) holder).bind(item.getCall());
-        }
+    public void onBindViewHolder(@NonNull CallViewHolder holder, int position) {
+        Call call = items.get(position);
+        holder.nameTextView.setText(call.getName());
+        holder.recordingIdTextView.setText(call.getRecordingId());
+        holder.itemView.setOnClickListener(v -> {
+            // Using the getter methods to retrieve the name and recordingId
+            String recordingId = call.getRecordingId();
+            if(recordingId!=null){
+                Intent intent =new Intent(context, CallSummary.class);
+                intent.putExtra("recordingId",recordingId);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -63,48 +54,15 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return items.size();
     }
 
-    class HeaderViewHolder extends RecyclerView.ViewHolder {
-        private TextView month;
-        private TextView date;
-        private TextView year;
-
-        public HeaderViewHolder(@NonNull View itemView) {
-            super(itemView);
-            month = itemView.findViewById(R.id.tvHeaderMonth);
-            date = itemView.findViewById(R.id.tvHeaderDate);
-            year = itemView.findViewById(R.id.tvHeaderYear);
-        }
-
-        public void bind(ListItem item) {
-            month.setText(item.getHeaderMonth());
-            date.setText(item.getHeaderDate() + ",");
-            year.setText(item.getHeaderYear());
-        }
-    }
-
-    class CallViewHolder extends RecyclerView.ViewHolder {
-        private TextView name;
-        private TextView recordingId;
-        private MaterialButton btnViewMore;
+    // ViewHolder class
+    public static class CallViewHolder extends RecyclerView.ViewHolder {
+        TextView nameTextView;
+        TextView recordingIdTextView;
 
         public CallViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.tvTitle);
-            recordingId = itemView.findViewById(R.id.tvTime);
-            btnViewMore = itemView.findViewById(R.id.btnViewMore);
-        }
-
-        public void bind(final Call call) {
-            name.setText("Call with " + call.getName());
-            recordingId.setText(call.getRecordingId());
-            
-            btnViewMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onViewMoreClickListener.onViewMoreClick(call);
-                }
-            });
+            nameTextView = itemView.findViewById(R.id.tvTitle);
+            recordingIdTextView = itemView.findViewById(R.id.tvTime);
         }
     }
 }
-
