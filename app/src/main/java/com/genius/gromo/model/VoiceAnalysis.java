@@ -1,15 +1,16 @@
 package com.genius.gromo.model;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class VoiceAnalysis {
     private String transcription;
-    private String language;
-    private String languageName;
+    private boolean status;
+    private String recordingId;
+    private String recording_url;
     private Sentiment sentiment;
     private String summary;
     private List<String> topics;
@@ -18,40 +19,47 @@ public class VoiceAnalysis {
     private List<String> actionItems;
     private List<String> questions;
 
-    public static VoiceAnalysis fromJson(JSONObject json) throws JSONException{
+    public static VoiceAnalysis fromJson(JSONObject json) throws JSONException {
         VoiceAnalysis analysis = new VoiceAnalysis();
         analysis.transcription = json.getString("transcription");
-        analysis.language = json.getString("language");
-        analysis.languageName = json.getString("language_name");
+        analysis.status = json.getBoolean("status");
+        analysis.recordingId = json.getString("recording_id");
+        analysis.recording_url = json.getString("recording_url");
 
-        JSONObject analysisObj = json.getJSONObject("analysis");
-        
-        // Parse sentiment
-        JSONObject sentimentObj = analysisObj.getJSONObject("sentiment");
-        analysis.sentiment = new Sentiment(
-            sentimentObj.getString("label"),
-            sentimentObj.getDouble("confidence"),
-            sentimentObj.getString("explanation")
-        );
+        JSONObject analysisObj = json.getJSONObject("analysis_data");
 
-        analysis.summary = analysisObj.getString("summary");
-        
-        // Parse arrays
-        analysis.topics = jsonArrayToList(analysisObj.getJSONArray("topics"));
-        analysis.keyPhrases = jsonArrayToList(analysisObj.getJSONArray("key_phrases"));
-        analysis.actionItems = jsonArrayToList(analysisObj.getJSONArray("action_items"));
-        analysis.questions = jsonArrayToList(analysisObj.getJSONArray("questions"));
-
-        // Parse entities
-        analysis.entities = new ArrayList<>();
-        JSONArray entitiesArray = analysisObj.getJSONArray("entities");
-        for (int i = 0; i < entitiesArray.length(); i++) {
-            JSONObject entityObj = entitiesArray.getJSONObject(i);
-            analysis.entities.add(new Entity(
-                entityObj.getString("name"),
-                entityObj.getString("type")
-            ));
+        // Parse sentiment (handle null)
+        if (!analysisObj.isNull("sentiment")) {
+            JSONObject sentimentObj = analysisObj.getJSONObject("sentiment");
+            analysis.sentiment = new Sentiment(
+                    sentimentObj.getString("label"),
+                    sentimentObj.getDouble("confidence"),
+                    sentimentObj.getString("explanation")
+            );
         }
+
+        // Parse summary (handle null)
+        analysis.summary = analysisObj.isNull("summary") ? "" : analysisObj.getString("summary");
+
+        // Parse arrays (handle null)
+        analysis.topics = analysisObj.isNull("topics") ? new ArrayList<>() : jsonArrayToList(analysisObj.getJSONArray("topics"));
+        analysis.keyPhrases = analysisObj.isNull("key_phrases") ? new ArrayList<>() : jsonArrayToList(analysisObj.getJSONArray("key_phrases"));
+        analysis.actionItems = analysisObj.isNull("action_items") ? new ArrayList<>() : jsonArrayToList(analysisObj.getJSONArray("action_items"));
+        analysis.questions = analysisObj.isNull("questions") ? new ArrayList<>() : jsonArrayToList(analysisObj.getJSONArray("questions"));
+
+        // Parse entities (handle null)
+        analysis.entities = new ArrayList<>();
+        if (!analysisObj.isNull("entities")) {
+            JSONArray entitiesArray = analysisObj.getJSONArray("entities");
+            for (int i = 0; i < entitiesArray.length(); i++) {
+                JSONObject entityObj = entitiesArray.getJSONObject(i);
+                analysis.entities.add(new Entity(
+                        entityObj.getString("name"),
+                        entityObj.getString("type")
+                ));
+            }
+        }
+
         return analysis;
     }
 
@@ -65,8 +73,9 @@ public class VoiceAnalysis {
 
     // Getters
     public String getTranscription() { return transcription; }
-    public String getLanguage() { return language; }
-    public String getLanguageName() { return languageName; }
+    public boolean isStatus() { return status; }
+    public String getRecordingId() { return recordingId; }
+    public String getRecording_url() { return recording_url; }
     public Sentiment getSentiment() { return sentiment; }
     public String getSummary() { return summary; }
     public List<String> getTopics() { return topics; }
@@ -105,12 +114,4 @@ public class VoiceAnalysis {
         public String getType() { return type; }
     }
 }
-
-
-
-
-
-
-
-
 

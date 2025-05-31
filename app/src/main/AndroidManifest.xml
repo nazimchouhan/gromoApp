@@ -32,6 +32,7 @@
 
         <!-- Activities -->
         <activity android:name="com.genius.gromo.CallSummary" />
+        <activity android:name=".LiveSummaryActivity" />
 
         <activity
             android:name=".card_details"
