@@ -359,8 +359,8 @@ public class CallingActivity extends AppCompatActivity {
                             Log.e(TAG, "Call started successfully. SID: " + sid);
 
                             //Start LiveSummaryActivity
-                            Intent intent = new Intent(getApplicationContext(), LiveSummaryActivity.class);
-                            startActivity(intent);
+//                            Intent intent = new Intent(getApplicationContext(), LiveSummaryActivity.class);
+//                            startActivity(intent);
 
                         } catch (JSONException e) {
                             Log.e(TAG, "Error parsing response JSON", e);

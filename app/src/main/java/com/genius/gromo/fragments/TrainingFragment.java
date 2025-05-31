@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import java.util.List;
 public class TrainingFragment extends Fragment {
     private RecyclerView recyclerViewCalls;
     private CallsAdapter callsAdapter;
+    private TextView getRecordingId;
 
 
     public TrainingFragment() {
@@ -44,6 +46,7 @@ public class TrainingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         // Initialize RecyclerView
+        getRecordingId=view.findViewById(R.id.tvTime);
         recyclerViewCalls = view.findViewById(R.id.recyclerViewCalls);
         recyclerViewCalls.setLayoutManager(new LinearLayoutManager(requireContext()));
         
@@ -53,16 +56,16 @@ public class TrainingFragment extends Fragment {
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefsSummary", Context.MODE_PRIVATE);
 
-        String recordingId=sharedPreferences.getString("recordingId",null);
+        //String recordingId=sharedPreferences.getString("recordingId",null);
 
         // Initialize adapter
         callsAdapter = new CallsAdapter(items, new CallsAdapter.OnViewMoreClickListener() {
             @Override
             public void onViewMoreClick(Call call) {
                 Toast.makeText(requireContext(), "Viewing details for call with " + call.getName(), Toast.LENGTH_SHORT).show();
-
                 Intent intent=new Intent(getActivity(), CallSummary.class);
-                intent.putExtra("recording_id", recordingId);
+                String mainRecordingId=getRecordingId.getText().toString();
+                intent.putExtra("recording_id",mainRecordingId);
                 startActivity(intent);
 
             }

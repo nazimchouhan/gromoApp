@@ -9,7 +9,7 @@ public class Call {
     private String date;
     private String year;
 
-    public Call(String name, String recodingId,String month,String date,String year){
+    public Call(String name, String recordingId,String month,String date,String year){
         this.name = name;
         this.recordingId = recordingId;
         this.date = date;
@@ -25,11 +25,11 @@ public class Call {
         this.name = name;
     }
 
-    public String getTime() {
+    public String getRecordingId() {
         return recordingId;
     }
 
-    public void setTime(String time) {
+    public void setRecordingId(String recordingId) {
         this.recordingId = recordingId;
     }
 

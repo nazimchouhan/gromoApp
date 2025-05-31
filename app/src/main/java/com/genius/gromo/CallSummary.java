@@ -43,7 +43,7 @@ public class CallSummary extends AppCompatActivity {
         initializeViews();
 
         // Get recording IDs from different sources
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefsSummary", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         recordingId1 = sharedPreferences.getString("recordingId", null);
         recordingId2 = getIntent().getStringExtra("recording_id");
 

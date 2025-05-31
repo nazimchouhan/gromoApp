@@ -84,19 +84,19 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     class CallViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
-        private TextView time;
+        private TextView recordingId;
         private MaterialButton btnViewMore;
 
         public CallViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.tvTitle);
-            time = itemView.findViewById(R.id.tvTime);
+            recordingId = itemView.findViewById(R.id.tvTime);
             btnViewMore = itemView.findViewById(R.id.btnViewMore);
         }
 
         public void bind(final Call call) {
             name.setText("Call with " + call.getName());
-            time.setText(call.getTime());
+            recordingId.setText(call.getRecordingId());
             
             btnViewMore.setOnClickListener(new View.OnClickListener() {
                 @Override
