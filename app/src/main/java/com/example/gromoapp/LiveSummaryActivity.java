@@ -144,8 +144,8 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 
         runOnUiThread(() -> {
             try {
-                if(message == null || message.get("type").equals("start") || message.get("type").equals("ping")){
-                    Log.e("", (String)message.get("type"));
+                if(message == null || message.get("event").equals("start") || message.get("event").equals("ping")){
+                    Log.e("", (String)message.get("event"));
                 }
                 else processReceivedData(message);
             } catch (JSONException e) {
@@ -157,7 +157,7 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 
     private void processReceivedData(JSONObject jsonObject) throws JSONException {
 //        if (jsonObject == null || jsonObject.isEmpty()) {
-        if (jsonObject == null || jsonObject.get("type").equals("ping") || jsonObject.get("type").equals("start")) {
+        if (jsonObject == null || jsonObject.get("event").equals("ping") || jsonObject.get("event").equals("start")) {
             Log.w(TAG, "Received empty message");
             return;
         }
@@ -183,6 +183,8 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
         String emoji = jsonObject.optString("neutrality_emoji", "😐");
         String objectionRadar = jsonObject.optString("objection_radar", "No objections detected");
         updateSentiment(score, emoji, objectionRadar);
+
+        Log.e("Updated "+ score, content);
     }
 
     private void updateTranscription(String text) {
@@ -208,13 +210,13 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 
     private void updateActionItems(List<String> items) {
 
-        if(items.get(0)!=null){
+        if(items.size() >= 1 && items.get(0)!=null){
             feedback1.setText(items.get(0));
         }
-        if(items.get(1)!=null){
+        if(items.size() >= 2 && items.get(1)!=null){
             feedback2.setText(items.get(1));
         }
-        if(items.get(2)!=null){
+        if(items.size() >= 3 && items.get(2)!=null){
             feedback3.setText(items.get(2));
         }
     }

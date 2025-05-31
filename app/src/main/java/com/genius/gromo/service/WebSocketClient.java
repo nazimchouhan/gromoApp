@@ -22,7 +22,7 @@ import okio.ByteString;
 public abstract class WebSocketClient {
     private OkHttpClient client;
     private WebSocket webSocket;
-    private static final String WEBSOCKET_URL = "wss://83a9-2401-4900-1c48-80a5-99df-7557-1ac1-1831.ngrok-free.app/ws";
+    private static final String WEBSOCKET_URL = "wss://4654-180-151-5-26.ngrok-free.app/ws";
 
     // Connection state
     private enum ConnectionState {
@@ -36,13 +36,13 @@ public abstract class WebSocketClient {
 
     // Reconnect
     private int reconnectAttempts = 0;
-    private final int MAX_RECONNECT_ATTEMPTS = 5;
+    private final int MAX_RECONNECT_ATTEMPTS = 200;
     private Timer reconnectTimer;
 
     // Keep-alive
     private Timer keepAliveTimer;
-    private final long KEEP_ALIVE_INTERVAL = 30000; // 30 seconds
-    private final long PING_TIMEOUT = 10000; // 10 seconds to wait for pong
+    private final long KEEP_ALIVE_INTERVAL = 20000; // 30 seconds
+    private final long PING_TIMEOUT = 5000; // 10 seconds to wait for pong
     private boolean pongReceived = false;
 
     // Abstract method for message handling
@@ -64,7 +64,7 @@ public abstract class WebSocketClient {
 
         client = new OkHttpClient.Builder()
                 .readTimeout(0, TimeUnit.MILLISECONDS)
-                .pingInterval(20, TimeUnit.SECONDS)
+                .pingInterval(10, TimeUnit.SECONDS)
                 .build();
 
         Request request = new Request.Builder()
@@ -82,7 +82,7 @@ public abstract class WebSocketClient {
                 JSONObject json = new JSONObject();
 
                 try {
-                    json.put("type", "start");
+                    json.put("event", "start");
                     json.put("client_type", "frontend");
                     json.put("client_id", "123456789");
                 } catch (JSONException e) {
@@ -91,7 +91,8 @@ public abstract class WebSocketClient {
 
                 String jsonString = json.toString();
                 webSocket.send(jsonString);
-                startKeepAlive();
+                webSocket.send(jsonString);
+//                startKeepAlive();
             }
 
             @Override
@@ -101,7 +102,7 @@ public abstract class WebSocketClient {
                     try {
                         JSONObject jsonObject = new JSONObject(text);
 
-                        String type = jsonObject.optString("type");
+                        String type = jsonObject.optString("event");
                         if ("start".equals(type) || type.equals("ping")) {
                             pongReceived = true;
                         } else {
@@ -126,7 +127,7 @@ public abstract class WebSocketClient {
                 synchronized (stateLock) {
                     currentState = ConnectionState.DISCONNECTED;
                 }
-                stopKeepAlive();
+//                stopKeepAlive();
                 webSocket.close(1000, null);
                 attemptReconnect();
             }
@@ -137,7 +138,7 @@ public abstract class WebSocketClient {
                 synchronized (stateLock) {
                     currentState = ConnectionState.DISCONNECTED;
                 }
-                stopKeepAlive();
+//                stopKeepAlive();
                 attemptReconnect();
             }
 
@@ -150,7 +151,7 @@ public abstract class WebSocketClient {
                 synchronized (stateLock) {
                     currentState = ConnectionState.DISCONNECTED;
                 }
-                stopKeepAlive();
+//                stopKeepAlive();
                 attemptReconnect();
             }
         });
@@ -171,17 +172,18 @@ public abstract class WebSocketClient {
 
         if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
             reconnectAttempts++;
-            long delay = (long) Math.pow(2, reconnectAttempts) * 1000;
-            Log.d(TAG, "Attempt " + reconnectAttempts + ": Reconnecting in " + delay / 1000 + " seconds...");
-            
+//            long delay = (long) Math.pow(2, reconnectAttempts) * 1000;
+//            Log.d(TAG, "Attempt " + reconnectAttempts + ": Reconnecting in " + delay / 1000 + " seconds...");
+//
             reconnectTimer = new Timer();
             reconnectTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     Log.d(TAG, "Reconnecting now...");
+                    stopWebSocket();
                     startWebSocket();
                 }
-            }, delay);
+            }, 2000);
         } else {
             Log.e(TAG, "Max reconnect attempts reached. Giving up!");
             synchronized (stateLock) {
@@ -190,65 +192,65 @@ public abstract class WebSocketClient {
         }
     }
 
-    private void startKeepAlive() {
-        if (keepAliveTimer != null) {
-            keepAliveTimer.cancel();
-        }
-        keepAliveTimer = new Timer();
-        Log.d(TAG, "Starting keep-alive ping every " + KEEP_ALIVE_INTERVAL / 1000 + " seconds.");
-        
-        keepAliveTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (webSocket != null) {
-                    pongReceived = false;
-                    String pingMessage = "{\"type\":\"ping\"}";
-                    boolean sent = webSocket.send(pingMessage);
-                    
-                    if (sent) {
-                        Log.d(TAG, "Keep-alive ping sent successfully");
-                        new Timer().schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (!pongReceived) {
-                                    Log.w(TAG, "No pong received within timeout");
-                                    stopKeepAlive();
-                                    synchronized (stateLock) {
-                                        if (currentState == ConnectionState.CONNECTED) {
-                                            attemptReconnect();
-                                        }
-                                    }
-                                }
-                            }
-                        }, PING_TIMEOUT);
-                    } else {
-                        Log.w(TAG, "Failed to send keep-alive ping");
-                        stopKeepAlive();
-                        attemptReconnect();
-                    }
-                } else {
-                    Log.w(TAG, "WebSocket is null! Can't send ping.");
-                    stopKeepAlive();
-                    attemptReconnect();
-                }
-            }
-        }, KEEP_ALIVE_INTERVAL, KEEP_ALIVE_INTERVAL);
-    }
-
-    private void stopKeepAlive() {
-        if (keepAliveTimer != null) {
-            Log.d(TAG, "Stopping keep-alive ping.");
-            keepAliveTimer.cancel();
-            keepAliveTimer = null;
-        }
-    }
+//    private void startKeepAlive() {
+//        if (keepAliveTimer != null) {
+//            keepAliveTimer.cancel();
+//        }
+//        keepAliveTimer = new Timer();
+//        Log.d(TAG, "Starting keep-alive ping every " + KEEP_ALIVE_INTERVAL / 1000 + " seconds.");
+//
+//        keepAliveTimer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (webSocket != null) {
+//                    pongReceived = false;
+//                    String pingMessage = "{\"event\":\"ping\"}";
+//                    boolean sent = webSocket.send(pingMessage);
+//
+//                    if (sent) {
+////                        Log.d(TAG, "Keep-alive ping sent successfully");
+//                        new Timer().schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                if (!pongReceived) {
+//                                    Log.w(TAG, "No pong received within timeout");
+//                                    stopKeepAlive();
+//                                    synchronized (stateLock) {
+//                                        if (currentState == ConnectionState.CONNECTED) {
+//                                            attemptReconnect();
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }, PING_TIMEOUT);
+//                    } else {
+//                        Log.w(TAG, "Failed to send keep-alive ping");
+//                        stopKeepAlive();
+//                        attemptReconnect();
+//                    }
+//                } else {
+//                    Log.w(TAG, "WebSocket is null! Can't send ping.");
+//                    stopKeepAlive();
+//                    attemptReconnect();
+//                }
+//            }
+//        }, KEEP_ALIVE_INTERVAL, KEEP_ALIVE_INTERVAL);
+//    }
+//
+//    private void stopKeepAlive() {
+//        if (keepAliveTimer != null) {
+//            Log.d(TAG, "Stopping keep-alive ping.");
+//            keepAliveTimer.cancel();
+//            keepAliveTimer = null;
+//        }
+//    }
 
     public void stopWebSocket() {
         Log.d(TAG, "Stopping WebSocket.");
         synchronized (stateLock) {
             currentState = ConnectionState.DISCONNECTED;
         }
-        stopKeepAlive();
+//        stopKeepAlive();
         
         if (reconnectTimer != null) {
             reconnectTimer.cancel();

@@ -66,6 +66,7 @@ public class CallingActivity extends AppCompatActivity {
     private static final String ACCOUNT_SID = "textrai1";
     private static final String BASE_URL = "https://ccm-api.exotel.com/v3/accounts/" + ACCOUNT_SID;
 
+    private static final String WEBSOCKET_URL = "wss://4654-180-151-5-26.ngrok-free.app/ws";
     private static final String CALLBACK_URL = "https://b5ff-180-151-5-26.ngrok-free.app/exotel/webhook";
 
     private EditText phoneNumberInput;
@@ -102,13 +103,13 @@ public class CallingActivity extends AppCompatActivity {
         setupInputValidation();
 //        setupWebSocket();
         setupCallButton();
-        callButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(), LiveSummaryActivity.class);
-                startActivity(intent);
-            }
-        });
+//        callButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent=new Intent(getApplicationContext(), LiveSummaryActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         callSummaryButton.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), CallSummary.class);
@@ -313,12 +314,12 @@ public class CallingActivity extends AppCompatActivity {
             callbackArray.put(callbackObj);
 
             JSONObject streamingObj = new JSONObject();
-            streamingObj.put("url", "wss://f9bc-103-98-23-90.ngrok-free.app/ws");
+            streamingObj.put("url", WEBSOCKET_URL);
             streamingObj.put("begin", "to_leg_connect");
 
             json.put("streaming",streamingObj);
 
-            json.put("status_callback", callbackArray);
+//            json.put("status_callback", callbackArray);
 
             String jsonString = json.toString();
             //RequestBody body = RequestBody.create(json.toString(), MediaType.parse("application/json"));
