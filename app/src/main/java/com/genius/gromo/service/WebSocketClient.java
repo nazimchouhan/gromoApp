@@ -22,7 +22,7 @@ import okio.ByteString;
 public abstract class WebSocketClient {
     private OkHttpClient client;
     private WebSocket webSocket;
-    private static final String WEBSOCKET_URL = "wss://4654-180-151-5-26.ngrok-free.app/ws";
+    private static final String WEBSOCKET_URL = "wss://262f-14-194-2-90.ngrok-free.app/ws";
 
     // Connection state
     private enum ConnectionState {
@@ -101,12 +101,27 @@ public abstract class WebSocketClient {
                 if (text != null && (text.trim().startsWith("{") || text.trim().startsWith("["))) {
                     try {
                         JSONObject jsonObject = new JSONObject(text);
-
                         String type = jsonObject.optString("event");
+
                         if ("start".equals(type) || type.equals("ping")) {
                             pongReceived = true;
                         } else {
-                            onMessageReceived(jsonObject);
+                            String temp_text = jsonObject.optString("content");
+
+                            // Extract inner JSON
+                            Log.d("sj", temp_text);
+                            int start = temp_text.indexOf('{');
+                            int end = temp_text.lastIndexOf('}') + 1;
+                            Log.d("start " + start, "");
+                            Log.d("end " + end, "");
+                            if (start != -1 && end != -1 && end > start) {
+                                String innerJsonStr = temp_text.substring(start, end);
+                                Log.d("okd", innerJsonStr);
+                                JSONObject innerJson = new JSONObject(innerJsonStr);
+
+                                Log.d("Parsed inner JSON:\n", innerJson.toString(2));
+                                onMessageReceived(innerJson);
+                            }
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, "Error parsing message: " + e.getMessage());

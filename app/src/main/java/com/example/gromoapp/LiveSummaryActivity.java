@@ -144,8 +144,8 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 
         runOnUiThread(() -> {
             try {
-                if(message == null || message.get("event").equals("start") || message.get("event").equals("ping")){
-                    Log.e("", (String)message.get("event"));
+                if(message == null){
+                    Log.e("null", "null");
                 }
                 else processReceivedData(message);
             } catch (JSONException e) {
@@ -157,7 +157,8 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 
     private void processReceivedData(JSONObject jsonObject) throws JSONException {
 //        if (jsonObject == null || jsonObject.isEmpty()) {
-        if (jsonObject == null || jsonObject.get("event").equals("ping") || jsonObject.get("event").equals("start")) {
+        Log.d("Gilli Gilli", "Chhu");
+        if (jsonObject == null) {
             Log.w(TAG, "Received empty message");
             return;
         }
@@ -167,7 +168,7 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
         // Update transcription
         String content = jsonObject.optString("message", "");
         updateTranscription(content);
-
+        Log.d("transcription", content);
         // Update action items
         JSONArray nextSteps = jsonObject.optJSONArray("next_action_steps");
         List<String> actionItems = new ArrayList<>();
@@ -180,8 +181,11 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 
         // Update sentiment
         int score = jsonObject.optInt("sentiment_score", 0);
+        Log.d("Score" + score, "");
         String emoji = jsonObject.optString("neutrality_emoji", "😐");
+        Log.d("Emoji", emoji);
         String objectionRadar = jsonObject.optString("objection_radar", "No objections detected");
+        Log.d("Objection Radar", objectionRadar);
         updateSentiment(score, emoji, objectionRadar);
 
         Log.e("Updated "+ score, content);
@@ -212,12 +216,15 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 
         if(items.size() >= 1 && items.get(0)!=null){
             feedback1.setText(items.get(0));
+            Log.d("Feedback1", items.get(0));
         }
         if(items.size() >= 2 && items.get(1)!=null){
             feedback2.setText(items.get(1));
+            Log.d("Feedback2", items.get(1));
         }
         if(items.size() >= 3 && items.get(2)!=null){
             feedback3.setText(items.get(2));
+            Log.d("Feedback3", items.get(2));
         }
     }
 
