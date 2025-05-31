@@ -66,8 +66,8 @@ public class CallingActivity extends AppCompatActivity {
     private static final String ACCOUNT_SID = "textrai1";
     private static final String BASE_URL = "https://ccm-api.exotel.com/v3/accounts/" + ACCOUNT_SID;
 
-    private static final String WEBSOCKET_URL = "wss://4654-180-151-5-26.ngrok-free.app/ws";
-    private static final String CALLBACK_URL = "https://bb0c-14-194-2-90.ngrok-free.app/exotel/webhook";
+    private static final String WEBSOCKET_URL = "wss://262f-14-194-2-90.ngrok-free.app/ws";
+    private static final String CALLBACK_URL = "https://b5ff-180-151-5-26.ngrok-free.app/exotel/webhook";
 
     private EditText phoneNumberInput;
     private EditText nameInput;
@@ -320,7 +320,7 @@ public class CallingActivity extends AppCompatActivity {
 
             json.put("streaming",streamingObj);
 
-//            json.put("status_callback", callbackArray);
+            json.put("status_callback", callbackArray);
 
             String jsonString = json.toString();
             //RequestBody body = RequestBody.create(json.toString(), MediaType.parse("application/json"));
