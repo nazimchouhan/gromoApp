@@ -21,7 +21,7 @@ import org.json.JSONObject;
 
 public class CallSummary extends AppCompatActivity {
 
-    private ProgressBar progressBar; // Your progress bar
+    //private ProgressBar progressBar; // Your progress bar
 //    private View contentLayout;
     private Toolbar toolbar;
     private TextView callDurationText;
@@ -44,19 +44,20 @@ public class CallSummary extends AppCompatActivity {
 
         // Get recording IDs from different sources
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        recordingId1 = sharedPreferences.getString("recordingId", null);
+        recordingId1 = sharedPreferences.getString("recordingId", "cae6b462456c51dd3c9e9f3173a11961");
         recordingId2 = getIntent().getStringExtra("recording_id");
 
         // Choose which recording ID to use
-        recordingIdToUse = recordingId2 != null ? recordingId2 : recordingId1;
+        recordingIdToUse = recordingId1 != null ? recordingId1 : recordingId2;
+
         Log.e("recordingid",recordingIdToUse);
         // Show progress and start analysis if we have a recording ID
         if (recordingIdToUse != null && !recordingIdToUse.isEmpty()) {
-            progressBar.setVisibility(View.VISIBLE);
+           // progressBar.setVisibility(View.VISIBLE);
 //            contentLayout.setVisibility(View.GONE);
             analyzeRecording();
         } else {
-            progressBar.setVisibility(View.GONE);
+            //progressBar.setVisibility(View.GONE);
 //            contentLayout.setVisibility(View.VISIBLE);
             Toast.makeText(this, "No recording ID available", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity since we can't proceed without a recording ID
@@ -123,7 +124,7 @@ public class CallSummary extends AppCompatActivity {
                 }catch (Exception e) {
                     Log.e(TAG, "Failed to parse analysis: " + e.getMessage());
                     runOnUiThread(() -> {
-                        progressBar.setVisibility(View.GONE);
+                       // progressBar.setVisibility(View.GONE);
                         Toast.makeText(CallSummary.this,
                                 "Failed to parse analysis: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
@@ -133,7 +134,7 @@ public class CallSummary extends AppCompatActivity {
             @Override
             public void onFailure(String error) {
                 runOnUiThread(() -> {
-                    progressBar.setVisibility(View.GONE);
+                   // progressBar.setVisibility(View.GONE);
                     Toast.makeText(CallSummary.this,
                             "Analysis failed: " + error, Toast.LENGTH_SHORT).show();
                 });

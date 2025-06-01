@@ -43,7 +43,7 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.CallViewHold
             String recordingId = call.getRecordingId();
             if(recordingId!=null){
                 Intent intent =new Intent(context, CallSummary.class);
-                intent.putExtra("recordingId",recordingId);
+                intent.putExtra("recording_id",recordingId);
                 context.startActivity(intent);
             }
         });

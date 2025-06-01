@@ -61,9 +61,9 @@ import okio.ByteString;
 public class CallingActivity extends AppCompatActivity {
 
     private static final String TAG = "CallingActivity";
-    private static final String API_KEY = "e00151d6919d8e3466b05530730b92e47cf93e0e04ddff77";
-    private static final String API_TOKEN = "70a42e01c3d0526b6eb5823b699e2365d2157c5ed296cfcb";
-    private static final String ACCOUNT_SID = "textrai1";
+    private static final String API_KEY = "0a22d12dfc8b8d8a1792f1ed7e88f889b86b6964fc86c763";
+    private static final String API_TOKEN = "443692cd141628915527d683d571ff6b28f55c07f03a8c02";
+    private static final String ACCOUNT_SID = "itbhu4";
     private static final String BASE_URL = "https://ccm-api.exotel.com/v3/accounts/" + ACCOUNT_SID;
 
     private static final String WEBSOCKET_URL = "wss://a5b7-14-194-2-90.ngrok-free.app/ws";
@@ -111,17 +111,17 @@ public class CallingActivity extends AppCompatActivity {
 //            }
 //        });
 
-        callSummaryButton.setOnClickListener(v -> {
-            Log.e("","ActivityStarted");
-            Intent intent = new Intent(getApplicationContext(), CallSummary.class);
-            startActivity(intent);
-        });
+//        callSummaryButton.setOnClickListener(v -> {
+//            Log.e("","ActivityStarted");
+//            Intent intent = new Intent(getApplicationContext(), CallSummary.class);
+//            startActivity(intent);
+//        });
     }
 
     private void initializeViews() {
         nameInput = findViewById(R.id.NameInput);
         nameInputLayout = findViewById(R.id.NameLayout);
-        callSummaryButton = findViewById(R.id.CallSummaryButton);
+        //callSummaryButton = findViewById(R.id.CallSummaryButton);
         phoneNumberInput = findViewById(R.id.phoneNumberInput);
         phoneNumberLayout = findViewById(R.id.phoneNumberLayout);
         callButton = findViewById(R.id.callButton);
@@ -253,8 +253,6 @@ public class CallingActivity extends AppCompatActivity {
 //                makePhoneCall();
 //            });
 
-            recordUserDetails(name, phoneNumber);
-            
 //             //Start LiveSummaryActivity
 //            Intent intent = new Intent(getApplicationContext(), LiveSummaryActivity.class);
 //            startActivity(intent);
@@ -278,7 +276,7 @@ public class CallingActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter a phone number", Toast.LENGTH_SHORT).show();
             return;
         }
-        startCallRecording("9519517906", phoneNumber);
+        startCallRecording("8058086931", phoneNumber);
         // Simulate starting call recording
         // look into this method if any problem occur
     }
@@ -301,7 +299,7 @@ public class CallingActivity extends AppCompatActivity {
 
             json.put("from", fromJson);
             json.put("to", toJson);
-            json.put("virtual_number", "08047092789");
+            json.put("virtual_number", "08047092858");
             json.put("recording", recordingJson);
             json.put("max_time_limit", 4000);
             json.put("attempt_time_out", 45);
@@ -356,6 +354,10 @@ public class CallingActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("recordingId", sid);  // Using 'recordingId' to save the sid
                             editor.apply();
+
+                            String phoneNumber = phoneNumberInput.getText().toString().trim();
+                            String name = nameInput.getText().toString().trim();
+                            recordUserDetails(name, phoneNumber);
 
                             Log.e(TAG, "Call started successfully. SID: " + sid);
 

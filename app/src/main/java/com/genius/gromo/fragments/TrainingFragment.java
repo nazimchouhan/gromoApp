@@ -53,7 +53,7 @@ public class TrainingFragment extends Fragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("UserPrefsSummary", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String name = sharedPreferences.getString("userName", "Nitin");
-        String recordingId=sharedPreferences.getString("recordingId",null);
+        String recordingId=sharedPreferences.getString("recordingId","cae6b462456c51dd3c9e9f3173a11961");
         callList=new ArrayList<>();
         callList.add(new Call(name,recordingId));
         callsAdapter = new CallsAdapter(getActivity(), callList);

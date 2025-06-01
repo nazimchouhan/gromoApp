@@ -121,22 +121,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Call Summary Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/CallSummaryButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="16dp"
-            android:text="Call Summary"
-            android:textSize="16sp"
-            android:backgroundTint="@color/primary_blue"
-            android:visibility="visible"
-           app:cornerRadius="8dp"
-           app:iconGravity="textStart"
-           app:layout_constraintTop_toBottomOf="@id/callButton"
-           app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintEnd_toEndOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

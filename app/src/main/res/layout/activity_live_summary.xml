@@ -50,12 +50,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:text="Live Transcription"
+        android:text="Objection Radar"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/tvtitle3" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/transcriptionCard"
@@ -86,7 +86,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/transcriptionCard" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <LinearLayout
         android:id="@+id/emojiContainer"
@@ -262,10 +262,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:text="•"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="8dp"/>
+                android:textStyle="bold" />
 
             <!-- Reminder text -->
             <TextView
@@ -278,9 +278,22 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/SummaryButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primary_blue"
+        android:text="Summary"
+        app:layout_constraintTop_toBottomOf="@+id/transcriptionCard"
+        app:cornerRadius="16dp"
+        android:padding="12dp" />
+
+
     <LinearLayout
         android:id="@+id/bottomBar"
-        android:backgroundTint="@color/primary_blue"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

@@ -25,13 +25,16 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.genius.gromo.CallSummary;
 import com.genius.gromo.service.LiveCallWebSocketClient;
+import com.google.android.material.button.MaterialButton;
 
 public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWebSocketClient.MessageCallback {
     private static final String TAG = "LiveSummaryActivity";
     
     // Views
     private TextView transcriptionText;
+    MaterialButton SummaryButton;
     private TextView sentimentScore;
     private TextView emojiText;
     private ProgressBar sentimentProgress;
@@ -78,10 +81,18 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
             Toast.makeText(this, "Error initializing live summary", Toast.LENGTH_SHORT).show();
             finish();
         }
+        SummaryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getApplicationContext(), CallSummary.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initializeViews() {
         transcriptionText = findViewById(R.id.transcriptionText);
+        SummaryButton=findViewById(R.id.SummaryButton);
         if (transcriptionText == null) {
             throw new IllegalStateException("Required view 'transcriptionText' not found");
         }
@@ -166,7 +177,7 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 //        JSONObject json = new JSONObject(jsonStr);
         
         // Update transcription
-        String content = jsonObject.optString("message", "");
+        String content = jsonObject.optString("objection_radar", "");
         updateTranscription(content);
         Log.d("transcription", content);
         // Update action items
