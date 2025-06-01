@@ -1,5 +1,7 @@
 package com.example.gromoapp;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,17 +28,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.genius.gromo.CallSummary;
+import com.genius.gromo.model.VoiceAnalysis;
 import com.genius.gromo.service.LiveCallWebSocketClient;
+import com.genius.gromo.service.VoiceAnalysisService;
 import com.google.android.material.button.MaterialButton;
 
 public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWebSocketClient.MessageCallback {
     private static final String TAG = "LiveSummaryActivity";
     
     // Views
+    private VoiceAnalysisService voiceAnalysisService;
     private TextView transcriptionText;
     MaterialButton SummaryButton;
     private TextView sentimentScore;
     private TextView emojiText;
+    private String recordingId;
     private ProgressBar sentimentProgress;
     private RecyclerView recyclerView;
    // private ReminderAdapter adapter;
@@ -84,8 +90,15 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
         SummaryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(), CallSummary.class);
-                startActivity(intent);
+                SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                recordingId = sharedPreferences.getString("recordingId", "");
+                if(recordingId == null || recordingId.isEmpty()) {
+                    Toast.makeText(getApplicationContext(),"Summary being Processed.",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                getRecordingStatus();
+//                Intent intent=new Intent(getApplicationContext(), CallSummary.class);
+//                startActivity(intent);
             }
         });
     }
@@ -108,7 +121,7 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
         objectionsInput = findViewById(R.id.objectionsInput);
         feedbackInput = findViewById(R.id.feedbackInput);
         improvementInput = findViewById(R.id.improvementInput);
-
+        voiceAnalysisService = new VoiceAnalysisService(this);
         //recyclerView = findViewById(R.id.remindersRecyclerView);
 //        if (recyclerView != null) {
 //            recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -119,6 +132,33 @@ public class LiveSummaryActivity extends AppCompatActivity implements LiveCallWe
 //        }
 
         setupButtons();
+    }
+
+    private void getRecordingStatus() {
+        voiceAnalysisService.analyzeRecording(recordingId, new VoiceAnalysisService.ApiCallback(){
+            @Override
+            public void onSuccess(JSONObject result) {
+                try {
+                    Log.e("response",result.toString());
+                    if(result.get("status") == null || result.get("status").equals(false)) {
+                        runOnUiThread(()->Toast.makeText(getApplicationContext(),"Summary being Processed.",Toast.LENGTH_SHORT).show());
+                    }
+                    else {
+                        runOnUiThread(() -> {
+                            Intent intent = new Intent(getApplicationContext(), CallSummary.class);
+                            startActivity(intent);
+                        });
+                    }
+                }catch (Exception e) {
+                    runOnUiThread(()->Toast.makeText(getApplicationContext(),"Summary being Processed.",Toast.LENGTH_SHORT).show());
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                runOnUiThread(()->Toast.makeText(getApplicationContext(),"Summary being Processed.",Toast.LENGTH_SHORT).show());
+            }
+        });
     }
 
     private void setupButtons() {

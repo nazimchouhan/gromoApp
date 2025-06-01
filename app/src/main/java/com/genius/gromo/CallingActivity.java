@@ -19,6 +19,8 @@ import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -69,8 +71,10 @@ public class CallingActivity extends AppCompatActivity {
     private static final String WEBSOCKET_URL = "wss://a5b7-14-194-2-90.ngrok-free.app/ws";
     private static final String CALLBACK_URL = "https://bb0c-14-194-2-90.ngrok-free.app/exotel/webhook";
 
-    private EditText phoneNumberInput;
-    private EditText nameInput;
+    private AutoCompleteTextView phoneNumberInput;
+    private AutoCompleteTextView nameInput;
+    private String name = "";
+    private String phoneNumber = "";
     private TextInputLayout nameInputLayout;
 
     private TextInputLayout phoneNumberLayout;
@@ -90,9 +94,38 @@ public class CallingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calling);
+        initializeViews();
+
+        String[] names = {"NITIN 7015219603", "NAZIM 8058086931", "HARPREET 9653040310"};
+//        String[] numbers = {"7015219603", "8058086931", "9653040310"};
+        ArrayAdapter<String> nameAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
+
+        nameInput.setAdapter(nameAdapter);
+//        phoneNumberInput.setAdapter(numberAdapter);
+        nameInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                nameInput.showDropDown();
+            }
+        });
+
+        nameInput.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedName = (String) parent.getItemAtPosition(position);
+            String[] parts = selectedName.trim().split("\\s+");
+            name = parts[0];
+            phoneNumber = parts[1];
+            Log.d("NameSelection", name+ " " + phoneNumber);
+            callButton.setEnabled(true);
+            callButton.setBackgroundTintList(ContextCompat.getColorStateList(
+                    this, R.color.primary_blue));
+            Toast.makeText(this, "You selected: " + selectedName, Toast.LENGTH_SHORT).show();
+        });
+//        phoneNumberInput.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                phoneNumberInput.showDropDown();
+//            }
+//        });
         
         // Initialize views
-        initializeViews();
         
         client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -100,7 +133,7 @@ public class CallingActivity extends AppCompatActivity {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
 
-        setupInputValidation();
+//        setupInputValidation();
 //        setupWebSocket();
         setupCallButton();
 //        callButton.setOnClickListener(new View.OnClickListener() {
@@ -120,13 +153,13 @@ public class CallingActivity extends AppCompatActivity {
 
     private void initializeViews() {
         nameInput = findViewById(R.id.NameInput);
-        nameInputLayout = findViewById(R.id.NameLayout);
+//        nameInputLayout = findViewById(R.id.NameLayout);
         //callSummaryButton = findViewById(R.id.CallSummaryButton);
-        phoneNumberInput = findViewById(R.id.phoneNumberInput);
-        phoneNumberLayout = findViewById(R.id.phoneNumberLayout);
+//        phoneNumberInput = findViewById(R.id.phoneNumberInput);
+//        phoneNumberLayout = findViewById(R.id.phoneNumberLayout);
         callButton = findViewById(R.id.callButton);
-        callStatusText = findViewById(R.id.callStatusText);
-        callDurationTimer = findViewById(R.id.callDurationTimer);
+//        callStatusText = findViewById(R.id.callStatusText);
+//        callDurationTimer = findViewById(R.id.callDurationTimer);
 
          //Disable call button initially
         if (callButton != null) {
@@ -136,66 +169,66 @@ public class CallingActivity extends AppCompatActivity {
         }
     }
 
-    private void setupInputValidation() {
-        if (phoneNumberInput != null) {
-            phoneNumberInput.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    validateInputs();
-                }
-            });
-        }
-
-        if (nameInput != null) {
-            nameInput.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    validateInputs();
-                }
-            });
-        }
-    }
+//    private void setupInputValidation() {
+//        if (phoneNumberInput != null) {
+//            phoneNumberInput.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    validateInputs();
+//                }
+//            });
+//        }
+//
+//        if (nameInput != null) {
+//            nameInput.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    validateInputs();
+//                }
+//            });
+//        }
+//    }
 
     private void validateInputs() {
-        String phoneNumber = phoneNumberInput != null ? phoneNumberInput.getText().toString().trim() : "";
-        String name = nameInput != null ? nameInput.getText().toString().trim() : "";
-
-        boolean isNameValid = isValidName(name);
-        boolean isPhoneValid = isValidPhoneNumber(phoneNumber);
-
-        if (nameInputLayout != null) {
-            nameInputLayout.setError(isNameValid ? null : "Invalid name (only A-Z)");
-        }
-        if (phoneNumberLayout != null) {
-            phoneNumberLayout.setError(isPhoneValid ? null : "Invalid phone number");
-        }
-
-        boolean isFormValid = isNameValid && isPhoneValid;
-        
-        if (callButton != null) {
-            callButton.setEnabled(isFormValid);
-            callButton.setBackgroundTintList(ContextCompat.getColorStateList(
-                    CallingActivity.this,
-                    isFormValid ? R.color.primary_blue : android.R.color.darker_gray
-            ));
-        }
+//        String phoneNumber = phoneNumberInput != null ? phoneNumberInput.getText().toString().trim() : "";
+//        String name = nameInput != null ? nameInput.getText().toString().trim() : "";
+//
+//        boolean isNameValid = isValidName(name);
+//        boolean isPhoneValid = isValidPhoneNumber(phoneNumber);
+//
+//        if (nameInputLayout != null) {
+//            nameInputLayout.setError(isNameValid ? null : "Invalid name (only A-Z)");
+//        }
+//        if (phoneNumberLayout != null) {
+//            phoneNumberLayout.setError(isPhoneValid ? null : "Invalid phone number");
+//        }
+//
+//        boolean isFormValid = isNameValid && isPhoneValid;
+//
+//        if (callButton != null) {
+//            callButton.setEnabled(isFormValid);
+//            callButton.setBackgroundTintList(ContextCompat.getColorStateList(
+//                    CallingActivity.this,
+//                    isFormValid ? R.color.primary_blue : android.R.color.darker_gray
+//            ));
+//        }
 
         // Record user details only if both inputs are valid
-        if (isFormValid) {
+//        if (isFormValid) {
             recordUserDetails(name, phoneNumber);
-        }
+//        }
     }
 
 //    private void setupWebSocket() {
@@ -240,8 +273,8 @@ public class CallingActivity extends AppCompatActivity {
 
     private void setupCallButton() {
         callButton.setOnClickListener(v -> {
-            String phoneNumber = phoneNumberInput.getText().toString().trim();
-            String name = nameInput.getText().toString().trim();
+//            String phoneNumber = phoneNumberInput.getText().toString().trim();
+//            String name = nameInput.getText().toString().trim();
             
             if (phoneNumber.isEmpty() || name.isEmpty()) {
                 Toast.makeText(this, "Please enter both name and phone number", Toast.LENGTH_SHORT).show();
@@ -271,7 +304,7 @@ public class CallingActivity extends AppCompatActivity {
     }
 
     private void makePhoneCall() {
-        String phoneNumber = phoneNumberInput.getText().toString().trim();
+//        String phoneNumber = phoneNumberInput.getText().toString().trim();
         if (phoneNumber.isEmpty()) {
             Toast.makeText(this, "Please enter a phone number", Toast.LENGTH_SHORT).show();
             return;
@@ -355,8 +388,8 @@ public class CallingActivity extends AppCompatActivity {
                             editor.putString("recordingId", sid);  // Using 'recordingId' to save the sid
                             editor.apply();
 
-                            String phoneNumber = phoneNumberInput.getText().toString().trim();
-                            String name = nameInput.getText().toString().trim();
+//                            String phoneNumber = phoneNumberInput.getText().toString().trim();
+//                            String name = nameInput.getText().toString().trim();
                             recordUserDetails(name, phoneNumber);
 
                             Log.e(TAG, "Call started successfully. SID: " + sid);
