@@ -15,13 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.example.gromoapp.R;
 import com.genius.gromo.model.VoiceAnalysis;
+
 import com.genius.gromo.service.VoiceAnalysisService;
 import org.json.JSONObject;
 
 public class CallSummary extends AppCompatActivity {
 
-    private ProgressBar progressBar; // Your progress bar
-    private View contentLayout;
+    //private ProgressBar progressBar; // Your progress bar
+//    private View contentLayout;
     private Toolbar toolbar;
     private TextView callDurationText;
     private EditText objectionsInput, feedbackInput, improvementInput;
@@ -29,33 +30,49 @@ public class CallSummary extends AppCompatActivity {
     private Button submitButton;
     private VoiceAnalysisService voiceAnalysisService;
     private long callDuration = 0;
-    private String recordingId;
+    private static String recordingId1;
+    private static String recordingId2;
+    private static String recordingIdToUse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_summary);
-        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-
-        String recordingId = sharedPreferences.getString("response_Id", "Default Name");
-
-        contentLayout=findViewById(R.id.ContentLayout);
-        progressBar = findViewById(R.id.progressBar); // e.g., a ProgressBar with id progressBar
-
-        // Initially, show the progress bar
-        progressBar.setVisibility(View.VISIBLE);
-
-        // Get data from intent
-        callDuration = getIntent().getLongExtra("CallDuration", 0L);
-
+        
         // Initialize views
+        initializeViews();
+
+        // Get recording IDs from different sources
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        recordingId1 = sharedPreferences.getString("recordingId", "cae6b462456c51dd3c9e9f3173a11961");
+        recordingId2 = getIntent().getStringExtra("recording_id");
+
+        // Choose which recording ID to use
+        recordingIdToUse = recordingId1 != null ? recordingId1 : recordingId2;
+
+        Log.e("recordingid",recordingIdToUse);
+        // Show progress and start analysis if we have a recording ID
+        if (recordingIdToUse != null && !recordingIdToUse.isEmpty()) {
+           // progressBar.setVisibility(View.VISIBLE);
+//            contentLayout.setVisibility(View.GONE);
+            analyzeRecording();
+        } else {
+            //progressBar.setVisibility(View.GONE);
+//            contentLayout.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "No recording ID available", Toast.LENGTH_SHORT).show();
+            finish(); // Close the activity since we can't proceed without a recording ID
+        }
+    }
+
+    private void initializeViews() {
+//        contentLayout = findViewById(R.id.ContentLayout);
+//        progressBar = findViewById(R.id.progressBar);
         toolbar = findViewById(R.id.toolbar);
         callDurationText = findViewById(R.id.callDurationText);
         objectionsInput = findViewById(R.id.objectionsInput);
         feedbackInput = findViewById(R.id.feedbackInput);
         improvementInput = findViewById(R.id.improvementInput);
         submitButton = findViewById(R.id.submitButton);
-
         transcriptionText = findViewById(R.id.transcriptionText);
         sentimentText = findViewById(R.id.sentimentText);
         summaryText = findViewById(R.id.summaryText);
@@ -67,11 +84,6 @@ public class CallSummary extends AppCompatActivity {
         // Setup UI and listeners
         setupUI();
         setupListeners();
-
-        // If we have a recording ID, analyze it
-        if (recordingId != null && !recordingId.isEmpty()) {
-            analyzeRecording();
-        }
     }
 
     private void setupUI() {
@@ -92,32 +104,40 @@ public class CallSummary extends AppCompatActivity {
     }
 
     private void analyzeRecording() {
-        voiceAnalysisService.analyzeRecording(recordingId, new VoiceAnalysisService.ApiCallback(){
+        voiceAnalysisService.analyzeRecording(recordingIdToUse, new VoiceAnalysisService.ApiCallback(){
             @Override
             public void onSuccess(JSONObject result) {
                 try {
+                    Log.e("response",result.toString());
                     VoiceAnalysis analysis = VoiceAnalysis.fromJson(result);
                     runOnUiThread(() -> {
                         // Update your analysis data in the UI
                         updateUIWithAnalysis(analysis);
 
                         // Once data is set, hide progress bar AFTER layout is drawn
-                        contentLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-                            // Layout is fully visible at this point
-                            progressBar.setVisibility(View.GONE);
-                        });
+//                        contentLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+//                            // Layout is fully visible at this point
+//                            progressBar.setVisibility(View.GONE);
+//                        });
                     });
 
-                } catch (Exception e) {
-                    onFailure("Failed to parse analysis: " + e.getMessage());
-                    Log.e(TAG,"Failed to get response");
+                }catch (Exception e) {
+                    Log.e(TAG, "Failed to parse analysis: " + e.getMessage());
+                    runOnUiThread(() -> {
+                       // progressBar.setVisibility(View.GONE);
+                        Toast.makeText(CallSummary.this,
+                                "Failed to parse analysis: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
                 }
             }
 
             @Override
             public void onFailure(String error) {
-                runOnUiThread(() -> Toast.makeText(CallSummary.this,
-                        "Analysis failed: " + error, Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> {
+                   // progressBar.setVisibility(View.GONE);
+                    Toast.makeText(CallSummary.this,
+                            "Analysis failed: " + error, Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
@@ -130,14 +150,17 @@ public class CallSummary extends AppCompatActivity {
         }
 
         // Sentiment
-        if (sentimentText != null && analysis.getSentiment() != null) {
-            String sentimentInfo = String.format("Sentiment: %s (%.2f%%)\n%s",
-                    analysis.getSentiment().getLabel(),
-                    analysis.getSentiment().getConfidence() * 100,
-                    analysis.getSentiment().getExplanation());
-            sentimentText.setText(sentimentInfo);
-        } else {
-            sentimentText.setText("No sentiment data");
+        if (sentimentText != null) {
+            VoiceAnalysis.Sentiment sentiment = analysis.getSentiment();
+            if (sentiment != null) {
+                String sentimentInfo = String.format("Sentiment: %s (%.2f%%)\n%s",
+                        sentiment.getLabel(),
+                        sentiment.getConfidence() * 100,
+                        sentiment.getExplanation());
+                sentimentText.setText(sentimentInfo);
+            } else {
+                sentimentText.setText("Sentiment analysis not available");
+            }
         }
 
         // Summary
@@ -145,6 +168,7 @@ public class CallSummary extends AppCompatActivity {
             String summary = analysis.getSummary();
             summaryText.setText(!summary.isEmpty() ? summary : "No summary available");
         }
+
         // Topics
         if (topicsText != null && analysis.getTopics() != null && !analysis.getTopics().isEmpty()) {
             StringBuilder topicsBuilder = new StringBuilder("Topics discussed:\n");
@@ -153,22 +177,28 @@ public class CallSummary extends AppCompatActivity {
             }
             topicsText.setText(topicsBuilder.toString());
         } else {
-            topicsText.setVisibility(View.GONE); // Hide if no topics
+            topicsText.setText("No topics identified");
         }
 
         // Action Items
-        if (!analysis.getActionItems().isEmpty()) {
+        if (analysis.getActionItems() != null && !analysis.getActionItems().isEmpty()) {
             improvementInput.setText(String.join("\n• ", analysis.getActionItems()));
+        } else {
+            improvementInput.setText("");
         }
 
         // Key Phrases
-        if (!analysis.getKeyPhrases().isEmpty()) {
+        if (analysis.getKeyPhrases() != null && !analysis.getKeyPhrases().isEmpty()) {
             feedbackInput.setText(String.join("\n• ", analysis.getKeyPhrases()));
+        } else {
+            feedbackInput.setText("");
         }
 
         // Questions
-        if (!analysis.getQuestions().isEmpty()) {
+        if (analysis.getQuestions() != null && !analysis.getQuestions().isEmpty()) {
             objectionsInput.setText(String.join("\n• ", analysis.getQuestions()));
+        } else {
+            objectionsInput.setText("");
         }
     }
     private void submitCallSummary() {

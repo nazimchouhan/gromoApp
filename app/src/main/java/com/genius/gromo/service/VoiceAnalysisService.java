@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 
 public class VoiceAnalysisService {
-    private static final String BASE_URL = "http://your-api-server:8000"; // consider this line
+    private static final String BASE_URLRecording = "https://bb0c-14-194-2-90.ngrok-free.app"; // consider this line
 
     private final Context context;
     private final OkHttpClient client;
@@ -33,8 +33,8 @@ public class VoiceAnalysisService {
 
     public void analyzeRecording(String recordingId, final ApiCallback callback) {
         Request request = new Request.Builder() // consider this line
-                .url(BASE_URL + "/recordings/" + recordingId + "/analysis") //check this line
-                .post(RequestBody.create(null, new byte[0]))
+                .url(BASE_URLRecording + "/recordings/" + recordingId + "/analysis") //check this line
+                .get()
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -48,18 +48,20 @@ public class VoiceAnalysisService {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String responseData = response.body().toString();
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseData);
-                        callback.onSuccess(jsonObject);
-                    }catch (org.json.JSONException e) {
-                        e.printStackTrace();
-                        callback.onFailure("JSON parsing error: " + e.getMessage());
+                    if(response.body()!=null){
+                        String responseData = response.body().string();
+                        Log.e("responsedata",responseData);
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseData);
+                            callback.onSuccess(jsonObject);
+                        }catch (org.json.JSONException e) {
+                            e.printStackTrace();
+                            callback.onFailure("JSON parsing error: " + e.getMessage());
+                        }
                     }
-                } else{
+                }else{
                     callback.onFailure("Analysis failed: " + response.code());
                     Log.e(TAG,"Response not Received");
-
                 }
             }
         });

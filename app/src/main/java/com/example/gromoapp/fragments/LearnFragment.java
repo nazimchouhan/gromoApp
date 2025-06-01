@@ -49,10 +49,10 @@ public class LearnFragment extends Fragment {
                 (tab, position) -> {
                     switch (position) {
                         case 0:
-                            tab.setText("Training");
+                            tab.setText("Analysis");
                             break;
                         case 1:
-                            tab.setText("Courses");
+                            tab.setText("Learn");
                             break;
                     }
                 }
