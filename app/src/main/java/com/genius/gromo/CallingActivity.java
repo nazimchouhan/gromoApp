@@ -414,13 +414,36 @@ public class CallingActivity extends AppCompatActivity {
 
     private void recordUserDetails(String name, String phoneNumber) {
         Log.d("UserDetails", "Name: " + name + ", Phone: " + phoneNumber);
-
-        // Example: Save in shared preferences (or any other method)
         SharedPreferences prefs = getSharedPreferences("UserPrefsSummary", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("userName", name);
-        editor.putString("userPhone", phoneNumber);
-        editor.putString("recordingId",recordingId); // consider this line for error recordingId
+        // Example: Save in shared preferences (or any other method)
+        JSONArray namesArray = new JSONArray();
+        JSONArray recordingsArray = new JSONArray();
+
+        // Load existing data
+        try {
+            String namesString = prefs.getString("userNames", "[]");
+            Log.d("Stored names", namesString);
+            namesArray = new JSONArray(namesString);
+        } catch (JSONException e) {
+            Log.e("SharedPrefs", "Failed to parse userNames: " + e.getMessage());
+        }
+
+        try {
+            String recordingsString = prefs.getString("recordingIds", "[]");
+            Log.d("Stored recordings", recordingsString);
+            recordingsArray = new JSONArray(recordingsString);
+        } catch (JSONException e) {
+            Log.e("SharedPrefs", "Failed to parse recordingIds: " + e.getMessage());
+        }
+
+        // Add new data
+        namesArray.put(name);
+        recordingsArray.put(recordingId);
+
+        // Save back to SharedPreferences
+        editor.putString("userNames", namesArray.toString());
+        editor.putString("recordingIds", recordingsArray.toString());
         editor.apply();
     }
 }

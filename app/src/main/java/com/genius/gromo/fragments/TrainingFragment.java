@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,9 @@ import com.example.gromoapp.adapters.CallsAdapter;
 import com.genius.gromo.CallSummary;
 import com.genius.gromo.model.Call;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +56,47 @@ public class TrainingFragment extends Fragment {
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("UserPrefsSummary", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        String name = sharedPreferences.getString("userName", "Nitin");
-        String recordingId=sharedPreferences.getString("recordingId","cae6b462456c51dd3c9e9f3173a11961");
-        callList=new ArrayList<>();
-        callList.add(new Call(name,recordingId));
+        String names = sharedPreferences.getString("userNames", "[]");
+        String recordingIds = sharedPreferences.getString("recordingIds","[]");
+        Log.d(names, recordingIds);
+        JSONArray namesArray = new JSONArray();
+        JSONArray recordingsArray = new JSONArray();
+        callList = new ArrayList<>();
+
+        try {
+            if (names != null && !names.isEmpty()) {
+                namesArray = new JSONArray(names);
+            }
+        } catch (JSONException e) {
+            Log.e("CallListBuilder", "Failed to parse names JSON: " + e.getMessage());
+        }
+
+        try {
+            if (recordingIds != null && !recordingIds.isEmpty()) {
+                recordingsArray = new JSONArray(recordingIds);
+            }
+        } catch (JSONException e) {
+            Log.e("CallListBuilder", "Failed to parse names JSON: " + e.getMessage());
+        }
+
+        int size = Math.min(namesArray.length(), recordingsArray.length());
+        for (int i = 0; i < size; i++) {
+            String name = null;
+            try {
+                name = namesArray.getString(i);
+            } catch (JSONException e) {
+                Log.e("CallListBuilder", "Failed to parse names JSON: " + e.getMessage());
+            }
+            String recordingId = null;
+            try {
+                recordingId = recordingsArray.getString(i);
+            } catch (JSONException e) {
+                Log.e("CallListBuilder", "Failed to parse names JSON: " + e.getMessage());
+            }
+
+            callList.add(new Call(name, recordingId));
+        }
         callsAdapter = new CallsAdapter(getActivity(), callList);
         recyclerViewCalls.setAdapter(callsAdapter);
-
     }
 } 
